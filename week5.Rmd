@@ -1,0 +1,168 @@
+---
+title: "📌 5주차 : 데이터불러오기"
+output: html_notebook
+---
+> 1. read.csv()
+> 2. scan() 
+> 3. read.table()
+> 4. indexing columns 
+> 5. 콤마(,)로 구분되어있는 txt는 read.csv()로 읽는다
+> 6. stringsAsFactors TRUE와 FALSE의 차이 
+> 7. write.table(): R데이터 객체를 외부 텍스트 파일로 저장하기 
+> 8. read_csv() : tidyverse 패키지 설치해서 '티블데이터프레임'으로 읽기
+> 9. xlsx, readxl 패키지로 xlsx 파일 읽기
+
+## 📌 read.csv() 
+```{r}
+test <- read.csv("Ericksen.csv")
+test 
+```
+## 📌 scan() : 텍스트파일 읽어오기
+```{r}
+data1 <- scan("data1.txt")
+data1
+```
+
+## 📌 read.table() : 2차원 형태의 데이터파일 불러오기 
+```{r}
+df1 <- read.table("data2_1.txt", stringsAsFactors = TRUE) 
+df1
+```
+
+```{r}
+class(df1) 
+names(df1) #컬럼 이름보여줘 
+```
+
+## 📌 컬럼 인덱싱 
+
+df[1] vs. df[[1]]차이 주의하기 
+```{r}
+#인덱싱
+df1[1] #첫번째 컬럼은? 
+df1[[1]] #첫번째 컬럼 문 한 번 더 열고, 내용물 보여줘 
+df1$V2 #V2라는 이름의 컬럼을 보여줘
+```
+
+class를 알아보자 : 시험볼 때 구분할 수 있어야 함! 
+```{r}
+class(df1[1]) 
+class(df1[[1]]) 
+class(df1$V1)
+```
+
+
+## 📌 stringsAsFactors (a.k.a. sss)
+```{r}
+df2 <- read.table("data2_1.txt", stringsAsFactors = FALSE)
+df2
+df0 <- read.table("data2_1.txt")#check default
+```
+```{r}
+class(df1$V2) #df1의 stringAsFactors = TRUE
+class(df2$V2) #df2의 stringAsFactors = FALSE
+class(df0$V2) #sss값을 아예 설정하지 않았다. 디폴트가 FALSE인 모양. 
+```
+
+
+## 📌 header   
+#### (1) header를 주지 않은 경우(default :header=FALSE)
+````{r}
+df2_2 <- read.table("data2_2.txt")
+df2_2
+````
+
+#### (2) header=TRUE로 컬럼 이름을 설정하자 
+```{r}
+df2_2 <- read.table("data2_2.txt", header=TRUE)
+df2_2
+```
+
+```{r}
+df2_2$gender
+class(df2_2$gender) #stringAsFactors를 default false기 때문에 캐릭터로 나옴 
+```
+ 
+<b> practice : sAF를 TRUE로 준다면? </b>
+```{r}
+df2_2 <- read.table("data2_2.txt",stringsAsFactors =TRUE, header=TRUE)
+df2_2$gender
+class(df2_2$gender)
+```
+
+## ,로 구분되어있는 txt는 csv로 읽을 수 있다 
+### 콤마로 구분되어있는 데이터는 read.csv로 읽자. read.table로 하면 지저분해짐 
+```{r}
+df3 <- read.csv("data3.txt")
+df3
+```
+
+## 📌 write.table()
+## R데이터 객체를 외부 텍스트 파일로 저장하기 
+```{r}
+data3 <- read.table("data3_women2.txt")
+data3
+
+#data3_women2.txt파일을, 쿼테이션 마크빼고(FALSE), 행 이름 없이 저장해줘
+write.table(women, "data3_women2.txt,quote=FALSE,row.names=FALSE")
+women
+```
+
+## 📌read_csv : 티블 dataframe으로 읽어짐 
+#### tidyverse 패키지 설치 필요  
+
+> console : 
+> install.packages("tidyverse") #타이디벌스 설치
+> The downloaded binary packages are in
+	/var/folders/rw/xb1bqk9179x6vknxfbztcj400000gn/T//Rtmp7DlytD/downloaded_packages
+> library(tidyverse) #불러오기 
+
+```{r}
+#각각 read.csv read_csv로 읽어보자 
+df5<-read.csv("data6.csv")
+df6<-read_csv("data6.csv")
+df5 #dataframe
+df6 #spec_tbl_df #티블형 데이터프레임
+class(df5)
+class(df6) 
+```
+
+#### 💡read_csv할 때, col_types="" 로 컬럼 데이터타입을 미리 설정 가능 
+```{r}
+df7<-read_csv("data6.csv", col_types = "ici") #integer-character-integer 
+df7
+```
+
+## 📌패키지 readxl 함수 
+> install.packages("xlsx")
+> install.packages("readxl")
+
+```{r}
+ex1 <- read_excel("data6.xlsx")
+ex1
+class(ex1) #tbl_df
+```
+
+#### 연습 : read_xlsx
+```{r}
+dfx <- read_xlsx("data6.xlsx")
+dfx 
+```
+
+```{r}
+df8<-read_csv("data5_1.txt", col_names=FALSE,col_types = "cfi")
+df8 
+```
+
+
+
+
+
+ Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Cmd+Shift+Enter*. 
+
+Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Cmd+Option+I*.
+
+When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Cmd+Shift+K* to preview the HTML file). 
+
+The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
+
